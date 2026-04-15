@@ -138,6 +138,8 @@ if __name__ == "__main__":
     if raw_data:
         # 2. Validate
         clean_data = validate(raw_data)
+        print(f"Validation summary: {len(clean_data)} records kept, {len(raw_data) - len(clean_data)} records dropped.")
+
 
         # 3. Transform
         final_df = transform(clean_data)
@@ -145,7 +147,7 @@ if __name__ == "__main__":
         # 4. Load
         if final_df is not None:
             load(final_df, OUTPUT_FILE)
-            print(f"\nPipeline completed! {len(final_df)} records saved.")
+            print(f"\nPipeline completed! {len(final_df)} records saved and {len(raw_data)- len(final_df)} drop")
         else:
             print("\nTransform returned None. Check your transform() function.")
     else:
