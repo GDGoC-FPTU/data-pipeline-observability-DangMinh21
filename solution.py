@@ -2,8 +2,8 @@
 ==============================================================
 Day 10 Lab: Build Your First Automated ETL Pipeline
 ==============================================================
-Student ID: AI20K-XXXX  (<-- Thay XXXX bang ma so cua ban)
-Name: Your Name Here
+Student ID: AI20K-2A202600027  (<-- Thay XXXX bang ma so cua ban)
+Name: Đặng Văn Minh
 
 Nhiem vu:
    1. Extract:   Doc du lieu tu file JSON
@@ -34,34 +34,33 @@ def extract(file_path):
     """
     Task 1: Doc du lieu JSON tu file.
 
-    Goi y:
-       - Dung json.load() de doc file JSON
-       - Xu ly truong hop file khong ton tai (FileNotFoundError)
-
     Returns:
         list: Danh sach cac records (dictionaries)
     """
     print(f"Extracting data from {file_path}...")
-    # TODO: Viet code doc file JSON o day
-    # Vi du:
-    #   with open(file_path, 'r') as f:
-    #       data = json.load(f)
-    #   return data
-    pass
+    try:
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"File {file_path} does not exist.")
+        
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+            if not isinstance(data, list):
+                raise ValueError("JSON file must contain a list of records.")
+        return data
+    except FileNotFoundError as e:
+        print(f"Error: {e}")
+    except json.JSONDecodeError:
+        print("Error: Failed to decode JSON. Ensure the file is properly formatted.")
+    except ValueError as e:
+        print(f"Error: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+    return []
 
 
 def validate(data):
     """
     Task 2: Kiem tra chat luong du lieu.
-
-    Quy tac validation:
-       - Price phai > 0 (loai bo gia am hoac bang 0)
-       - Category khong duoc rong
-
-    Goi y:
-       - Dung record.get('price', 0) de lay gia
-       - Dung record.get('category') de kiem tra category
-       - In ra so luong record hop le va khong hop le
 
     Returns:
         list: Danh sach cac records hop le
@@ -69,8 +68,21 @@ def validate(data):
     valid_records = []
     error_count = 0
 
-    # TODO: Lap qua data, kiem tra tung record
-    # Giu lai record hop le, dem record loi
+    for record in data:
+        try:
+            price = record.get('price', 0)
+            category = record.get('category', '').strip()
+
+            if price <= 0 or not category:
+                raise ValueError("Invalid record: price must be > 0 and category must not be empty.")
+
+            valid_records.append(record)
+        except ValueError as e:
+            error_count += 1
+            print(f"Validation error: {e} - Record: {record}")
+        except Exception as e:
+            error_count += 1
+            print(f"Unexpected error during validation: {e} - Record: {record}")
 
     print(f"Validation complete. Valid: {len(valid_records)}, Errors: {error_count}")
     return valid_records
@@ -80,33 +92,36 @@ def transform(data):
     """
     Task 3: Ap dung business logic.
 
-    Yeu cau:
-       - Tinh discounted_price = price * 0.9 (giam 10%)
-       - Chuan hoa category thanh Title Case (vi du: "electronics" -> "Electronics")
-       - Them cot processed_at = timestamp hien tai
-
-    Goi y:
-       - Dung pd.DataFrame(data) de tao DataFrame
-       - df['discounted_price'] = df['price'] * 0.9
-       - df['category'] = df['category'].str.title()
-       - df['processed_at'] = datetime.datetime.now().isoformat()
-
     Returns:
         pd.DataFrame: DataFrame da duoc transform
     """
-    # TODO: Tao DataFrame va ap dung transformations
-    pass
+    try:
+        df = pd.DataFrame(data)
+
+        if 'price' not in df.columns or 'category' not in df.columns:
+            raise KeyError("Missing required columns 'price' or 'category' in data.")
+
+        df['discounted_price'] = df['price'] * 0.9
+        df['category'] = df['category'].str.title()
+        df['processed_at'] = datetime.datetime.now().isoformat()
+
+        return df
+    except KeyError as e:
+        print(f"Error: {e}")
+    except Exception as e:
+        print(f"Unexpected error during transformation: {e}")
+    return None
 
 
 def load(df, output_path):
     """
     Task 4: Luu DataFrame ra file CSV.
-
-    Goi y:
-       - df.to_csv(output_path, index=False)
     """
-    # TODO: Luu DataFrame ra CSV
-    print(f"Data saved to {output_path}")
+    try:
+        df.to_csv(output_path, index=False)
+        print(f"Data saved to {output_path}")
+    except Exception as e:
+        print(f"Error saving data to CSV: {e}")
 
 
 # ============================================================

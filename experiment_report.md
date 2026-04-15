@@ -1,8 +1,8 @@
 # Experiment Report: Data Quality Impact on AI Agent
 
-**Student ID:** AI20K-XXXX
-**Name:** (Dien ten cua ban)
-**Date:** (Dien ngay thuc hien)
+**Student ID:** 2A202600027
+**Name:** Đặng Văn Minh
+**Date:** 15/04/2026
 
 ---
 
@@ -12,8 +12,8 @@ Chay `agent_simulation.py` voi 2 bo du lieu va ghi lai ket qua:
 
 | Scenario | Agent Response | Accuracy (1-10) | Notes |
 |----------|----------------|-----------------|-------|
-| Clean Data (`processed_data.csv`) | (Ghi cau tra loi cua Agent) | | |
-| Garbage Data (`garbage_data.csv`) | (Ghi cau tra loi cua Agent) | | |
+| Clean Data (`processed_data.csv`) | Based on my data, the best choice is Laptop at $1200. | 9 | Dữ liệu sạch, không lỗi. |
+| Garbage Data (`garbage_data.csv`) | Based on my data, the best choice is Nuclear Reactor at $999999. | 2 | Dữ liệu lỗi: giá sai ($999999 vô lý), thiếu ids, trùng lặp, sai định dạng, outliers. |
 
 ---
 
@@ -21,15 +21,19 @@ Chay `agent_simulation.py` voi 2 bo du lieu va ghi lai ket qua:
 
 ### Tai sao Agent tra loi sai khi dung Garbage Data?
 
-(Viet nhan xet cua ban o day — it nhat 50 tu)
+Dữ liệu Garbage chứa nhiều vấn đề nghiêm trọng:
 
-(Hay phan tich cac van de nhu Duplicate IDs, wrong data types, outliers, null values
-va giai thich tai sao chung anh huong den ket qua cua Agent.)
+- **Duplicate IDs:** ID trùng lặp gây khó khăn trong việc xác định sản phẩm duy nhất.
+- **Sai định dạng dữ liệu:** Ví dụ, "ten dollars" không phải giá trị số hợp lệ, gây lỗi khi so sánh giá.
+- **Outliers:** Giá trị bất thường như $999999 làm sai lệch quyết định của Agent.
+- **Null Values:** Giá trị thiếu (ví dụ: ID hoặc tên sản phẩm trống) làm giảm độ tin cậy của dữ liệu.
+
+Những vấn đề này làm gián đoạn khả năng xử lý và phân tích dữ liệu của Agent, dẫn đến câu trả lời sai lệch.
 
 ---
 
 ## 3. Ket luan
 
-**Quality Data > Quality Prompt?** (Dong y hay khong? Giai thich ngan gon.)
+**Quality Data > Quality Prompt?**
 
-(Viet ket luan cua ban o day)
+Đồng ý. Dữ liệu chất lượng cao quyết định trực tiếp đến độ chính xác và tin cậy của câu trả lời từ Agent. Prompt tốt chỉ hiệu quả khi dữ liệu đầu vào đáng tin cậy.
